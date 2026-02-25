@@ -4,18 +4,16 @@ Authentication endpoints for the High School Management System API
 
 from fastapi import APIRouter, HTTPException
 from typing import Dict, Any
-import hashlib
 
-from ..database import teachers_collection
+from ..database import _init_db, hash_password
 
 router = APIRouter(
     prefix="/auth",
     tags=["auth"]
 )
 
-def hash_password(password):
-    """Hash password using SHA-256"""
-    return hashlib.sha256(password.encode()).hexdigest()
+# Ensure DB is initialized
+activities_collection, teachers_collection = _init_db()
 
 @router.post("/login")
 def login(username: str, password: str) -> Dict[str, Any]:

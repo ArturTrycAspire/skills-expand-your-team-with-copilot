@@ -6,12 +6,15 @@ from fastapi import APIRouter, HTTPException, Query
 from fastapi.responses import RedirectResponse
 from typing import Dict, Any, Optional, List
 
-from ..database import activities_collection, teachers_collection
+from ..database import _init_db
 
 router = APIRouter(
     prefix="/activities",
     tags=["activities"]
 )
+
+# Ensure DB is initialized
+activities_collection, teachers_collection = _init_db()
 
 @router.get("", response_model=Dict[str, Any])
 @router.get("/", response_model=Dict[str, Any])
