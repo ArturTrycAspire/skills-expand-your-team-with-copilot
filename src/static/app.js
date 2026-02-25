@@ -568,6 +568,12 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
         `
         }
+        <div class="share-section">
+          <span class="share-label">Share:</span>
+          <button class="share-btn share-twitter" title="Share on X (Twitter)" data-activity="${name}">𝕏</button>
+          <button class="share-btn share-email" title="Share via Email" data-activity="${name}">✉</button>
+          <button class="share-btn share-copy" title="Copy link" data-activity="${name}">🔗</button>
+        </div>
       </div>
     `;
 
@@ -586,6 +592,33 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
     }
+
+    // Add click handlers for share buttons
+    const shareUrl = `${window.location.origin}${window.location.pathname}?activity=${encodeURIComponent(name)}`;
+    const shareText = `Check out "${name}" at Mergington High School! ${details.description}`;
+
+    const twitterBtn = activityCard.querySelector(".share-twitter");
+    twitterBtn.addEventListener("click", () => {
+      const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+      window.open(twitterUrl, "_blank", "noopener,noreferrer");
+    });
+
+    const emailBtn = activityCard.querySelector(".share-email");
+    emailBtn.addEventListener("click", () => {
+      const subject = encodeURIComponent(`Check out "${name}" at Mergington High School!`);
+      const body = encodeURIComponent(`${shareText}\n\nSchedule: ${formatSchedule(details)}\n\nLearn more: ${shareUrl}`);
+      window.location.href = `mailto:?subject=${subject}&body=${body}`;
+    });
+
+    const copyBtn = activityCard.querySelector(".share-copy");
+    copyBtn.addEventListener("click", () => {
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        copyBtn.textContent = "✓";
+        setTimeout(() => { copyBtn.textContent = "🔗"; }, 2000);
+      }).catch(() => {
+        showMessage("Could not copy link. Please copy the URL manually.", "error");
+      });
+    });
 
     activitiesList.appendChild(activityCard);
   }
